@@ -249,7 +249,7 @@ scrollHeader(); // ДОБАВЛЕНИЕ ХЕДЕРУ КЛАСС ПРИ СКРО�
 };
 quantity(); // СЧЁТЧИКИ */
 
-/* function mySpollers() {
+function mySpollers() {
 	const spollersArray = document.querySelectorAll('[data-spollers]');
 
 	if (spollersArray.length > 0) {
@@ -351,7 +351,7 @@ quantity(); // СЧЁТЧИКИ */
 						hideSpollersBody(spollersBlock);
 					}
 					spollerTitle.classList.toggle('_active');
-					_slideToggle(spollerTitle.nextElementSibling, 500);
+					_slideToggle(spollerTitle.nextElementSibling, 400);
 				}
 				e.preventDefault();
 			}
@@ -360,12 +360,12 @@ quantity(); // СЧЁТЧИКИ */
 			const spollerActiveTitle = spollersBlock.querySelector('[data-spoller]._active');
 			if (spollerActiveTitle) {
 				spollerActiveTitle.classList.remove('_active');
-				_slideUp(spollerActiveTitle.nextElementSibling, 500);
+				_slideUp(spollerActiveTitle.nextElementSibling, 400);
 			}
 		}
 	}
 
-	let _slideUp = (target, duration = 500) => {
+	let _slideUp = (target, duration = 400) => {
 		if (!target.classList.contains('_slide')) {
 			target.classList.add('_slide');
 			target.style.transitionProperty = 'height, margin, padding';
@@ -392,7 +392,7 @@ quantity(); // СЧЁТЧИКИ */
 			}, duration);
 		}
 	}
-	let _slideDown = (target, duration = 500) => {
+	let _slideDown = (target, duration = 400) => {
 		if (!target.classList.contains('_slide')) {
 			target.classList.add('_slide');
 			if (target.hidden) {
@@ -422,7 +422,7 @@ quantity(); // СЧЁТЧИКИ */
 			}, duration);
 		}
 	}
-	let _slideToggle = (target, duration = 500) => {
+	let _slideToggle = (target, duration = 400) => {
 		if (target.hidden) {
 			return _slideDown(target, duration);
 		} else {
@@ -430,7 +430,7 @@ quantity(); // СЧЁТЧИКИ */
 		}
 	}
 }
-mySpollers(); // СПОЙЛЕРЫ */
+mySpollers(); // СПОЙЛЕРЫ
 
 function myPopups() {
 	const links = document.querySelectorAll("[data-popup-open]");
@@ -557,6 +557,7 @@ function myBurger() {
 	if (document.getElementById("header-menu")) {
 		const burgerOpen = document.getElementById("menu-open");
 		const burgerContent = document.getElementById("menu-content");
+		const lockPadding = document.querySelectorAll(".lock-padding");
 		const body = document.querySelector("body");
 
 		if (burgerOpen && burgerContent) {
@@ -564,13 +565,34 @@ function myBurger() {
 				if (!burgerOpen.classList.contains("_active")) {
 					burgerContent.classList.add("_active");
 					burgerOpen.classList.add("_active");
-					body.classList.add("_lock-scroll");
+					bodyLock()
 				} else {
 					burgerContent.classList.remove("_active");
 					burgerOpen.classList.remove("_active");
-					body.classList.remove("_lock-scroll");
+					bodyUnLock()
 				}
 			});
+
+			function bodyLock() {
+				const lockPaddingValue = window.innerWidth - document.querySelector(".wrapper").offsetWidth + "px";
+				if (lockPadding) {
+					lockPadding.forEach(elem => {
+						elem.style.paddingRight = lockPaddingValue;
+					});
+				}
+				body.style.paddingRight = lockPaddingValue;
+				body.classList.add("_lock-scroll");
+			}
+
+			function bodyUnLock() {
+				if (lockPadding) {
+					lockPadding.forEach(elem => {
+						elem.style.paddingRight = "0px";
+					});
+				}
+				body.style.paddingRight = "0px";
+				body.classList.remove("_lock-scroll");
+			}
 
 			if (document.querySelector("[data-popup-open]")) {
 				function popupTarget() {
@@ -868,3 +890,29 @@ function showHeaderItems() {
 	});
 }
 showHeaderItems()
+
+function marque() {
+	var wrapper = document.querySelector('.marquee-wrapper'),
+		marquee = document.querySelector('.marquee'),
+		wrapperWidth = wrapper.offsetWidth,
+		marqueeWidth = marquee.scrollWidth;
+
+	function move() {
+		var currentTX = getComputedStyle(marquee).transform.split(',');
+		if (currentTX[4] === undefined) {
+			currentTX = -1;
+		} else {
+			currentTX = parseFloat(currentTX[4]) - 1;
+		}
+
+		if (-currentTX >= marqueeWidth) {
+			marquee.style.transform = 'translateX(' + wrapperWidth + 'px)';
+
+		} else {
+			marquee.style.transform = 'translateX(' + currentTX + 'px)';
+		}
+	}
+
+	var interval = setInterval(move, 40);
+}
+marque()
