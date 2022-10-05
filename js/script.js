@@ -789,28 +789,52 @@ if (isMobile.any()) {
 
 //< " СКРИПТЫ " >=============================================================================================================>//
 
+function footerNav() {
+	const lists = document.querySelectorAll(".footer-menu__sub-list");
+
+	document.addEventListener("DOMContentLoaded", function () {
+
+		lists.forEach(list => {
+			const items = list.querySelectorAll(".footer-menu__sub-item");
+
+			if (items.length > 4) {
+				items.forEach(item => {
+					item.parentElement.style.gridTemplateColumns = "repeat(2, auto)";
+				});
+			}
+		});
+	});
+}
+footerNav()
+
 function showHeaderItems() {
 	const actionItems = document.querySelectorAll(".header-actions__item");
 
+	const sizeWindow = 992.2;
+
 	actionItems.forEach(item => {
 		item.addEventListener("mouseover", function () {
-			const textItems = item.querySelectorAll(".header-actions__text");
+			if (window.innerWidth > sizeWindow) {
+				const textItems = item.querySelectorAll(".header-actions__text");
 
-			textItems.forEach(element => {
-				element.style.width = "155px";
-			});
+				textItems.forEach(element => {
+					element.style.width = "155px";
+				});
+			}
 		});
 
 		item.addEventListener("mouseout", function () {
-			const textItems = item.querySelectorAll(".header-actions__text");
+			if (window.innerWidth > sizeWindow) {
+				const textItems = item.querySelectorAll(".header-actions__text");
 
-			textItems.forEach(element => {
-				element.style.width = "0px";
-			});
+				textItems.forEach(element => {
+					element.style.width = "0px";
+				});
+			}
 		});
 
 		window.addEventListener("resize", function () {
-			if (window.innerWidth > 992.2) {
+			if (window.innerWidth > sizeWindow) {
 				const textItems = item.querySelectorAll(".header-actions__text");
 
 				textItems.forEach(element => {
@@ -826,7 +850,7 @@ function showHeaderItems() {
 		});
 
 		document.addEventListener("DOMContentLoaded", function () {
-			if (window.innerWidth > 992.2) {
+			if (window.innerWidth > sizeWindow) {
 				const textItems = item.querySelectorAll(".header-actions__text");
 
 				textItems.forEach(element => {
