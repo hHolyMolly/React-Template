@@ -432,7 +432,7 @@ quantity(); // СЧЁТЧИКИ */
 }
 mySpollers(); // СПОЙЛЕРЫ */
 
-/* function myPopups() {
+function myPopups() {
 	const links = document.querySelectorAll("[data-popup-open]");
 	const lockPadding = document.querySelectorAll(".lock-padding");
 	const body = document.body;
@@ -444,6 +444,7 @@ mySpollers(); // СПОЙЛЕРЫ */
 	if (links) {
 		links.forEach(link => {
 			link.addEventListener("click", function (e) {
+				e.preventDefault();
 				const popupName = this.getAttribute("data-popup");
 				const currentPopup = document.getElementById(popupName);
 				popupOpen(currentPopup);
@@ -550,7 +551,7 @@ mySpollers(); // СПОЙЛЕРЫ */
 		})();
 	}
 }
-myPopups(); // ПОПАПЫ */
+myPopups(); // ПОПАПЫ 
 
 function myBurger() {
 	if (document.getElementById("header-menu")) {
@@ -818,7 +819,7 @@ function showHeaderItems() {
 				const textItems = item.querySelectorAll(".header-actions__text");
 
 				textItems.forEach(element => {
-					element.style.width = "155px";
+					element.style.width = "170px";
 				});
 			}
 		});
