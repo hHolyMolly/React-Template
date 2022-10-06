@@ -160,6 +160,8 @@ function scrollHeader() {
 }
 scrollHeader(); // ДОБАВЛЕНИЕ ХЕДЕРУ КЛАСС ПРИ СКРОЛЛЕ
 
+; // АНИМИРОВАННЫЙ
+
 function weBuySlider() {
 	if (document.querySelector(".we-buy__slider")) {
 		const arrows = document.querySelector(".we-buy__slider").querySelector(".we-buy-slider__arrows");
@@ -847,6 +849,11 @@ myRatingStars(); // ЗВЕЗДНЫЙ РЕЙТИНГ */
 myForms(); // ВАЛИДАЦИЯ ФОРМЫ */
 
 //< " СКРИПТЫ " >=============================================================================================================>//
+
+new WOW({
+	mobile: false,
+	offset: 100,
+}).init();
 
 let isMobile = {
 	Android: function () { return navigator.userAgent.match(/Android/i); },
