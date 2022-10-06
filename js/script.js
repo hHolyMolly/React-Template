@@ -190,7 +190,6 @@ function weBuySlider() {
 			new Swiper(".we-buy__slider", {
 				slidesPerView: 3,
 				spaceBetween: 30,
-				grabCursor: true,
 				speed: 800,
 
 				navigation: {
@@ -213,7 +212,31 @@ function weBuySlider() {
 		window.addEventListener("resize", weBuyValid);
 	}
 }
-weBuySlider(); // НАСТРОЙКИ СЛАЙДЕРА
+weBuySlider()
+
+if (document.querySelector(".customers-said__slider")) {
+	new Swiper(".customers-said__slider", {
+		slidesPerView: 1,
+		spaceBetween: 20,
+		grabCursor: true,
+		speed: 800,
+		loop: true,
+
+		navigation: {
+			nextEl: ".customers-said-slider__arrow.swiper-button-next",
+			prevEl: ".customers-said-slider__arrow.swiper-button-prev",
+		},
+
+		breakpoints: {
+			992.2: {
+				slidesPerView: 3,
+			},
+			480.2: {
+				slidesPerView: 2,
+			},
+		}
+	});
+}; // НАСТРОЙКИ СЛАЙДЕРА
 
 /* function quantity() {
 	if (document.querySelectorAll('[data-quantity]')) {
