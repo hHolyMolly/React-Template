@@ -160,30 +160,60 @@ function scrollHeader() {
 }
 scrollHeader(); // ДОБАВЛЕНИЕ ХЕДЕРУ КЛАСС ПРИ СКРОЛЛЕ
 
-/* if (document.querySelector(".swiper")) {
-	new Swiper(".swiper", {
-		slidesPerView: 1,
-		spaceBetween: 15,
-		grabCursor: true,
-		loop: true,
-		speed: 800,
+function weBuySlider() {
+	if (document.querySelector(".we-buy__slider")) {
+		const arrows = document.querySelector(".we-buy__slider").querySelector(".we-buy-slider__arrows");
 
-		autoplay: {
-			delay: 3500,
-		},
+		function weBuyValid() {
+			const slides = document.querySelectorAll(".we-buy-slider__slide");
 
-		navigation: {
-			nextEl: ".swiper-button-next",
-			prevEl: ".swiper-button-prev",
-		},
-
-		breakpoints: {
-			767.8: {},
+			if (window.innerWidth > 1024.2 && slides.length > 7) {
+				swiperStart()
+			} else {
+				arrows.style.display = "none";
+			}
+			if (window.innerWidth > 768.2 && slides.length > 5) {
+				swiperStart()
+			} else {
+				arrows.style.display = "none";
+			}
+			if (window.innerWidth < 768.2 && slides.length > 3) {
+				swiperStart()
+			} else {
+				arrows.style.display = "none";
+			}
 		}
-	});
-}
 
-; // НАСТРОЙКИ СЛАЙДЕРА */
+		function swiperStart() {
+			arrows.style.display = "flex";
+
+			new Swiper(".we-buy__slider", {
+				slidesPerView: 3,
+				spaceBetween: 30,
+				grabCursor: true,
+				speed: 800,
+
+				navigation: {
+					nextEl: ".swiper-button-next",
+					prevEl: ".swiper-button-prev",
+				},
+
+				breakpoints: {
+					1024.2: {
+						slidesPerView: 7,
+					},
+					768.2: {
+						slidesPerView: 5,
+					},
+				}
+			});
+		}
+
+		document.addEventListener("DOMContentLoaded", weBuyValid);
+		window.addEventListener("resize", weBuyValid);
+	}
+}
+weBuySlider(); // НАСТРОЙКИ СЛАЙДЕРА
 
 /* function quantity() {
 	if (document.querySelectorAll('[data-quantity]')) {
@@ -890,29 +920,3 @@ function showHeaderItems() {
 	});
 }
 showHeaderItems()
-
-function marque() {
-	var wrapper = document.querySelector('.marquee-wrapper'),
-		marquee = document.querySelector('.marquee'),
-		wrapperWidth = wrapper.offsetWidth,
-		marqueeWidth = marquee.scrollWidth;
-
-	function move() {
-		var currentTX = getComputedStyle(marquee).transform.split(',');
-		if (currentTX[4] === undefined) {
-			currentTX = -1;
-		} else {
-			currentTX = parseFloat(currentTX[4]) - 1;
-		}
-
-		if (-currentTX >= marqueeWidth) {
-			marquee.style.transform = 'translateX(' + wrapperWidth + 'px)';
-
-		} else {
-			marquee.style.transform = 'translateX(' + currentTX + 'px)';
-		}
-	}
-
-	var interval = setInterval(move, 40);
-}
-marque()
