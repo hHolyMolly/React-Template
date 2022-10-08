@@ -950,3 +950,30 @@ function showHeaderItems() {
 	});
 }
 showHeaderItems()
+
+function showText() {
+	const items = document.querySelectorAll(".page__text-column");
+
+	items.forEach(item => {
+		item.addEventListener("click", function (e) {
+			const elementTarget = e.target;
+
+			const texts = item.querySelectorAll(".text-column__item");
+
+			if (elementTarget.closest(".text-column__button")) {
+				texts.forEach(text => {
+					if (text.style.display = "none") {
+						text.style.display = "flex";
+
+						const buttons = document.querySelectorAll(".text-column__button");
+
+						buttons.forEach(button => {
+							button.style.display = "none";
+						});
+					}
+				});
+			}
+		});
+	});
+}
+showText()
