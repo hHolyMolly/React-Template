@@ -608,6 +608,296 @@ function myPopups() {
 }
 myPopups(); // ПОПАПЫ 
 
+function myPagination() {
+	const mains = document.querySelectorAll("[data-main]");
+	mains.forEach((main) => {
+		// document
+
+		//показ стартовых блоков
+		let CONFIG = Number(
+			main.querySelector("[data-pagination]").getAttribute("data-pagination")
+		);
+
+		const contents = main.querySelectorAll("[data-content]");
+		const contentsLength = main.querySelectorAll("[data-content]").length;
+
+		//считывание сколько контента и создает столько же кнопок
+		contents.forEach(() => {
+			const lengthBtn = main.querySelectorAll("[data-btn]").length;
+
+			const order = lengthBtn + 1;
+
+			const billet = main.querySelector("[data-billet]");
+			const copy = billet.cloneNode();
+			copy.removeAttribute("data-billet");
+			copy.setAttribute("data-btn", `${order}`);
+			copy.innerHTML = order;
+
+			const zone = main.querySelector("[data-btns]");
+			zone.appendChild(copy);
+		});
+
+		//при обновлении страницы, первый блок активный
+		const firstBtn = main.querySelector("[data-btn]");
+		firstBtn.classList.add("_active");
+		//стрелки
+		firstBtn.setAttribute("data-arrows", "");
+
+		//клик по кнопке
+		main.addEventListener("click", (event) => {
+			if (event.target.closest("[data-btn]")) {
+				// =================================================================================================
+
+				const att = event.target.getAttribute("data-btn");
+				const modAtt = `[data-content="${att}"]`;
+
+				main.querySelector(modAtt).classList.add("_active");
+				event.target.classList.add("_active");
+				//стрелки
+				event.target.setAttribute("data-arrows", "");
+
+				// контент
+				const contents = main.querySelectorAll("[data-content]");
+				contents.forEach((content) => {
+					if (content.getAttribute("data-content") === att) {
+					} else {
+						content.classList.remove("_active");
+					}
+				});
+				// кнопки
+				const checkBtns = main.querySelectorAll("[data-btn]");
+				checkBtns.forEach((checkBtn) => {
+					if (checkBtn.getAttribute("data-btn") === att) {
+					} else {
+						checkBtn.classList.remove("_active");
+						//стрелки
+						checkBtn.removeAttribute("data-arrows");
+					}
+				});
+
+				const contentsLength = main.querySelectorAll("[data-content]").length;
+				const min = Number(att) - 1;
+				const max = Number(att) + (CONFIG - 2);
+
+				//danger
+				const add = CONFIG - 2;
+				const dangerZone = contentsLength - add;
+
+				//основной механизм
+				//проверка на опасную зону
+				if (Number(event.target.getAttribute("data-btn")) > dangerZone) {
+					//если попало в опасную зону
+					const btns = main.querySelectorAll("[data-btn]");
+					btns.forEach((btn) => {
+						const minLength =
+							Number(main.querySelectorAll("[data-content]").length) - CONFIG;
+
+						if (Number(btn.getAttribute("data-btn")) > minLength) {
+							btn.classList.add("_visible");
+						} else {
+							btn.classList.remove("_visible");
+						}
+					});
+				} else {
+					//игнор первой цифры
+					if (Number(event.target.getAttribute("data-btn")) === 1) {
+					} else {
+						//нормальная зона, показать основные цифры на основе клика
+						const btns = main.querySelectorAll("[data-btn]");
+						btns.forEach((btn) => {
+							if (
+								Number(btn.getAttribute("data-btn")) >= min &&
+								btn.getAttribute("data-btn") <= max
+							) {
+								btn.classList.add("_visible");
+							} else {
+								btn.classList.remove("_visible");
+							}
+						});
+					}
+				}
+
+				const top = main.getBoundingClientRect().top;
+
+				window.scrollBy({
+					top: top,
+					behavior: "smooth"
+				});
+			}
+
+			//нажали на правую кнопку
+			if (event.target.closest("[data-right]")) {
+				const checkArrows = main.querySelector("[data-arrows]");
+
+				// ===================================================================================================
+
+				//игнор если последняя цифра
+				if (Number(checkArrows.getAttribute("data-btn")) === contentsLength) {
+				} else {
+					const arrows = main.querySelector("[data-arrows]");
+					arrows.classList.remove("_active");
+					arrows.removeAttribute("data-arrows");
+					arrows.nextElementSibling.classList.add("_active");
+					arrows.nextElementSibling.setAttribute("data-arrows", "");
+
+					//следующий елемент
+					const targetElement = arrows.nextElementSibling;
+
+					const att = targetElement.getAttribute("data-btn");
+					const modAtt = `[data-content="${att}"]`;
+
+					main.querySelector(modAtt).classList.add("_active");
+
+					// контент
+					const contents = main.querySelectorAll("[data-content]");
+					contents.forEach((content) => {
+						if (content.getAttribute("data-content") === att) {
+						} else {
+							content.classList.remove("_active");
+						}
+					});
+
+					const contentsLength = main.querySelectorAll("[data-content]").length;
+					const min = Number(att) - 1;
+					const max = Number(att) + (CONFIG - 2);
+
+					//danger
+					const add = CONFIG - 2;
+					const dangerZone = contentsLength - add;
+
+					//основной механизм
+					//проверка на опасную зону
+					if (Number(targetElement.getAttribute("data-btn")) > dangerZone) {
+						//если попало в опасную зону
+						const btns = main.querySelectorAll("[data-btn]");
+						btns.forEach((btn) => {
+							const minLength =
+								Number(main.querySelectorAll("[data-content]").length) - CONFIG;
+
+							if (Number(btn.getAttribute("data-btn")) > minLength) {
+								btn.classList.add("_visible");
+							} else {
+								btn.classList.remove("_visible");
+							}
+						});
+					} else {
+						//нормальная зона, показать основные цифры на основе клика
+						const btns = main.querySelectorAll("[data-btn]");
+						btns.forEach((btn) => {
+							if (
+								Number(btn.getAttribute("data-btn")) >= min &&
+								btn.getAttribute("data-btn") <= max
+							) {
+								btn.classList.add("_visible");
+							} else {
+								btn.classList.remove("_visible");
+							}
+						});
+					}
+				}
+
+				const top = main.getBoundingClientRect().top;
+				window.scrollBy({
+					top: top,
+					behavior: "smooth"
+				});
+			}
+			//@нажали на левую кнопку
+			if (event.target.closest("[data-left]")) {
+				const checkArrows = main.querySelector("[data-arrows]");
+
+				// ===================================================================================================
+
+				//игнор если первая или вторая цифра
+				if (
+					Number(checkArrows.getAttribute("data-btn")) === 1 ||
+					Number(checkArrows.getAttribute("data-btn")) === 2
+				) {
+					if (Number(checkArrows.getAttribute("data-btn")) === 2) {
+						const arrows = main.querySelector("[data-arrows]");
+						arrows.classList.remove("_active");
+						arrows.removeAttribute("data-arrows");
+						arrows.previousElementSibling.classList.add("_active");
+						arrows.previousElementSibling.setAttribute("data-arrows", "");
+
+						// контент
+						const contents = main.querySelectorAll("[data-content]");
+						contents.forEach((content) => {
+							if (content.getAttribute("data-content") === 1) {
+								content.classList.add("_active");
+							}
+						});
+					}
+				} else {
+					const arrows = main.querySelector("[data-arrows]");
+					arrows.classList.remove("_active");
+					arrows.removeAttribute("data-arrows");
+					arrows.previousElementSibling.classList.add("_active");
+					arrows.previousElementSibling.setAttribute("data-arrows", "");
+
+					//предыдущий елемент
+					const targetElement = arrows.previousElementSibling;
+
+					const att = targetElement.getAttribute("data-btn");
+					const modAtt = `[data-content="${att}"]`;
+
+					main.querySelector(modAtt).classList.add("_active");
+
+					// контент
+					const contents = main.querySelectorAll("[data-content]");
+					contents.forEach((content) => {
+						if (content.getAttribute("data-content") === att) {
+						} else {
+							content.classList.remove("_active");
+						}
+					});
+
+					const contentsLength = main.querySelectorAll("[data-content]").length;
+					const min = Number(att) - 1;
+					const max = Number(att) + (CONFIG - 2);
+
+					//danger
+					const add = CONFIG - 2;
+					const dangerZone = contentsLength - add;
+
+					//основной механизм
+					//проверка на опасную зону
+					if (Number(targetElement.getAttribute("data-btn")) > dangerZone) {
+					} else {
+						//нормальная зона, показать основные цифры на основе клика
+						const btns = main.querySelectorAll("[data-btn]");
+						btns.forEach((btn) => {
+							if (
+								Number(btn.getAttribute("data-btn")) >= min &&
+								btn.getAttribute("data-btn") <= max
+							) {
+								btn.classList.add("_visible");
+							} else {
+								btn.classList.remove("_visible");
+							}
+						});
+					}
+				}
+
+				const top = main.getBoundingClientRect().top;
+				window.scrollBy({
+					top: top,
+					behavior: "smooth"
+				});
+			}
+		});
+
+		// при обновлении добавляет к-во стартовых блоков
+		const btns = main.querySelectorAll("[data-btn]");
+		btns.forEach((btn) => {
+			if (Number(btn.getAttribute("data-btn")) <= CONFIG) {
+				btn.classList.add("_visible");
+			}
+		});
+	});
+}
+myPagination(); // ПАГИНАЦИЯ
+
 function myBurger() {
 	if (document.getElementById("header-menu")) {
 		const burgerOpen = document.getElementById("menu-open");
