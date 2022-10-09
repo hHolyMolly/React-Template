@@ -491,16 +491,38 @@ mySpollers(); // СПОЙЛЕРЫ
 const mains = document.querySelectorAll("[data-select-main]");
 mains.forEach((main) => {
 	main.addEventListener("click", (event) => {
+		// туда куда нажали открывать и добавлять стрелку, остальные закрывать и убирать стрелки
+		if (event.target.closest("[data-select-btn]")) {
+			const eTarget = event.target.closest("[data-select-main]");
+
+			const checkMains = document.querySelectorAll("[data-select-main]");
+			checkMains.forEach((checkMain) => {
+				if (checkMain === eTarget) {
+				} else {
+					checkMain
+						.querySelector("[data-select-body]")
+						.classList.remove("_active");
+					checkMain
+						.querySelector("[data-select-arrow]")
+						.classList.remove("_active");
+					checkMain
+						.querySelector("[data-select-btn]")
+						.classList.remove("_active");
+				}
+			});
+		}
+
 		//если нажали на кнопку, показать или спрятать: боди и стрелку
 		if (event.target.closest("[data-select-btn]")) {
 			main.querySelector("[data-select-body]").classList.toggle("_active");
-			main.querySelector("[data-select-arrow]").classList.toggle("_active");
 			main.querySelector("[data-select-btn]").classList.toggle("_active");
+			main.querySelector("[data-select-arrow]").classList.toggle("_active");
 		}
 
 		//если нажали на сам селект, взять его текст всунуть в кнопку, спрятать боди, убрать стрелку
 		if (event.target.closest("[data-selected]")) {
 			const innerText = event.target.closest("[data-selected]").innerHTML;
+
 			main.querySelector("[data-select-btn-name]").innerHTML = innerText;
 			main.querySelector("[data-select-body]").classList.remove("_active");
 			main.querySelector("[data-select-arrow]").classList.remove("_active");
@@ -516,6 +538,7 @@ document.addEventListener("click", (event) => {
 		!event.target.closest("[data-select-body]")
 	) {
 		const mains = document.querySelectorAll("[data-select-main]");
+
 		mains.forEach((main) => {
 			main.querySelector("[data-select-body]").classList.remove("_active");
 			main.querySelector("[data-select-arrow]").classList.remove("_active");
@@ -1403,3 +1426,97 @@ if (furniture && !isMobile.any()) {
 		}
 	});
 }
+
+function inputFile() {
+	const mains = document.querySelectorAll("[data-input-file-main]");
+	mains.forEach((main) => {
+		const input = main.querySelector("[data-input-file]");
+		const inputText = main.querySelector("[data-input-file-text]");
+
+		const cfgMaxSymbols = Number(
+			main
+				.querySelector("[data-input-file-text]")
+				.getAttribute("data-input-file-max-symbols")
+		);
+		const cfgMaxSize = Number(
+			main
+				.querySelector("[data-input-file-maxsize]")
+				.getAttribute("data-input-file-maxsize")
+		);
+
+		// проверка к-во букв у изначального текста, если больше указаного максимума добавить три точки
+		if (inputText.innerText.split("").length > cfgMaxSymbols) {
+			inputText.innerText =
+				inputText.innerText.split("").slice(0, cfgMaxSymbols).join("") + "...";
+		}
+
+		// обработчик
+		input.addEventListener("change", (event) => {
+			//проверка на тип файла
+			for (const file of input.files) {
+				if (
+					file.type === "image/png" ||
+					file.type === "image/jpeg" ||
+					file.type === "image/svg+xml"
+				) {
+					// это графический файл
+					inputText.classList.remove("_active");
+				} else {
+					// это не графический файл
+					inputText.innerText = "only png, jpeg, svg";
+					return;
+				}
+			}
+
+			// проверка на вес файла
+			let bytes = 0;
+			for (const file of input.files) {
+				bytes = +file.size;
+			}
+			const MB = cfgMaxSize;
+			const root = Math.pow(1024, 2);
+			const convertInBite = MB * root;
+
+			if (bytes > convertInBite) {
+				// файл > cfgMaxSize
+				main
+					.querySelector("[data-input-file-maxsize]")
+					.classList.add("_active");
+				return;
+			} else {
+				// файл < cfgMaxSize
+				main
+					.querySelector("[data-input-file-maxsize]")
+					.classList.remove("_active");
+			}
+
+			// проеврка на к-во файлов
+			if (input.files.length > 1) {
+				// больше одного файла
+
+				inputText.innerText = "files selected";
+			} else {
+				// один файл
+
+				for (const file of input.files) {
+					// проверка на к-во символов
+					if (file.name.split("").length > cfgMaxSymbols) {
+						// символов в имени файла > cfgMaxSymbols
+
+						inputText.innerText =
+							file.name.split("").slice(0, cfgMaxSymbols).join("") + "...";
+					} else {
+						// символов в имени файла < cfgMaxSymbols
+
+						inputText.innerText = file.name;
+					}
+				}
+			}
+		});
+	});
+}
+inputFile();
+
+
+
+
