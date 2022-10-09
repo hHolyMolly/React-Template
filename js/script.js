@@ -487,6 +487,44 @@ function mySpollers() {
 }
 mySpollers(); // СПОЙЛЕРЫ
 
+//уникализация (замена document на main)
+const mains = document.querySelectorAll("[data-select-main]");
+mains.forEach((main) => {
+	main.addEventListener("click", (event) => {
+		//если нажали на кнопку, показать или спрятать: боди и стрелку
+		if (event.target.closest("[data-select-btn]")) {
+			main.querySelector("[data-select-body]").classList.toggle("_active");
+			main.querySelector("[data-select-arrow]").classList.toggle("_active");
+			main.querySelector("[data-select-btn]").classList.toggle("_active");
+		}
+
+		//если нажали на сам селект, взять его текст всунуть в кнопку, спрятать боди, убрать стрелку
+		if (event.target.closest("[data-selected]")) {
+			const innerText = event.target.closest("[data-selected]").innerHTML;
+			main.querySelector("[data-select-btn-name]").innerHTML = innerText;
+			main.querySelector("[data-select-body]").classList.remove("_active");
+			main.querySelector("[data-select-arrow]").classList.remove("_active");
+			main.querySelector("[data-select-btn]").classList.remove("_active");
+		}
+	});
+});
+
+//если нажали куда то кроме кнопки и селекта, то просто скрыть все боди и убрать все стрелки
+document.addEventListener("click", (event) => {
+	if (
+		!event.target.closest("[data-select-btn]") &&
+		!event.target.closest("[data-select-body]")
+	) {
+		const mains = document.querySelectorAll("[data-select-main]");
+		mains.forEach((main) => {
+			main.querySelector("[data-select-body]").classList.remove("_active");
+			main.querySelector("[data-select-arrow]").classList.remove("_active");
+			main.querySelector("[data-select-btn]").classList.remove("_active");
+		});
+	}
+});
+; // КАСТОМНЫЙ СЕЛЕКТ
+
 function myPopups() {
 	const links = document.querySelectorAll("[data-popup-open]");
 	const lockPadding = document.querySelectorAll(".lock-padding");
@@ -1077,18 +1115,35 @@ myTabs();; // ТАБЫ */
 myRatingStars(); // ЗВЕЗДНЫЙ РЕЙТИНГ */
 
 /* function myForms() {
-	const forms = document.querySelectorAll(".form");
+	const forms = document.querySelectorAll("form");
 
 	if (forms) {
 		forms.forEach(form => {
+			let error = 0;
+
 			form.addEventListener("submit", formSend);
 
-			function formSend(e) {
-				let error = 0;
+			const inputs = document.querySelectorAll("._req");
 
+			inputs.forEach(input => {
+				input.addEventListener("blur", function () {
+					if (input.value < 1) {
+						input.parentElement.classList.add("_invalid");
+					}
+				});
+			});
+
+			function formSend(e) {
 				const items = form.querySelectorAll("._req");
 
 				items.forEach(item => {
+					if (item.value.length < 1) {
+						item.parentElement.classList.add("_invalid");
+						error++;
+					} else {
+						item.parentElement.classList.remove("_invalid");
+					}
+
 					function validEmail() {
 						if (item.classList.contains("_email")) {
 							const emailValid = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
@@ -1099,12 +1154,12 @@ myRatingStars(); // ЗВЕЗДНЫЙ РЕЙТИНГ */
 
 							if (!validateEmail(item.value)) {
 								form.querySelectorAll("._req._email").forEach(item => {
-									item.classList.add("_invalid");
+									item.parentElement.classList.add("_invalid");
 								});
 								error++;
 							} else {
 								form.querySelectorAll("._req._email").forEach(item => {
-									item.classList.remove("_invalid");
+									item.parentElement.classList.remove("_invalid");
 								});
 							}
 						}
@@ -1118,9 +1173,9 @@ myRatingStars(); // ЗВЕЗДНЫЙ РЕЙТИНГ */
 							if (passwords) {
 								passwords.forEach(password => {
 									if (password.value.length < 8) {
-										password.classList.add("_invalid")
+										password.parentElement.classList.add("_invalid")
 									} else {
-										password.classList.remove("_invalid")
+										password.parentElement.classList.remove("_invalid")
 									}
 								});
 							}
@@ -1134,9 +1189,25 @@ myRatingStars(); // ЗВЕЗДНЫЙ РЕЙТИНГ */
 				}
 			}
 		});
+
+		function invalid() {
+			document.addEventListener("click", function (e) {
+				if (e.target.closest("._req")) {
+					e.target.parentElement.classList.remove("_invalid");
+					error--;
+				}
+
+				if (error > 0) {
+					e.preventDefault()
+				}
+			});
+		}
+		invalid()
 	}
 }
-myForms(); // ВАЛИДАЦИЯ ФОРМЫ */
+myForms()
+
+; // ВАЛИДАЦИЯ ФОРМЫ */
 
 //< " СКРИПТЫ " >=============================================================================================================>//
 
@@ -1267,3 +1338,68 @@ function showText() {
 	});
 }
 showText()
+
+function textareaValue() {
+	const textareaItems = document.querySelectorAll(".field__item-textarea");
+
+	textareaItems.forEach(item => {
+		item.addEventListener("input", function (e) {
+			const elementTarget = e.target;
+
+			const textarea = item.querySelector(".field__textarea");
+
+			if (elementTarget.closest(".field__textarea")) {
+				let textareaValue = textarea.value.length;
+				let text = item.querySelector(".field__textarea-value").innerText;
+				text = textareaValue;
+				item.querySelector(".field__textarea-value").innerText = textareaValue;
+			}
+		});
+	});
+}
+textareaValue()
+
+const furniture = document.querySelector('.gallery-block__body');
+if (furniture && !isMobile.any()) {
+	const furnitureItems = document.querySelector('.gallery-block__column');
+	const furnitureColumn = document.querySelectorAll('.gallery-block__row_parallax');
+
+	const speed = furniture.dataset.speed;
+
+	let positionX = 0;
+	let coordXprocent = 0;
+
+	function setMauseGalleryStyle() {
+		let furnitureItemsWidth = 0;
+		furnitureColumn.forEach(elemen => {
+			furnitureItemsWidth += elemen.offsetWidth;
+		});
+
+		const furnitureDifferent = furnitureItemsWidth - furniture.offsetWidth;
+		const distX = Math.floor(coordXprocent - positionX);
+
+		positionX = positionX + (distX * speed);
+		let position = furnitureDifferent / 200 * positionX;
+
+		furnitureItems.style.cssText = `transform: translate3d(${-position}px,0,0);`;
+
+		if (Math.abs(distX) > 0) {
+			requestAnimationFrame(setMauseGalleryStyle);
+		} else {
+			furniture.classList.remove('_init');
+		}
+	}
+	furniture.addEventListener("mousemove", function (e) {
+		if (window.innerWidth > 1024.2) {
+			const furnitureWidth = furniture.offsetWidth;
+			const coordX = e.pageX - furnitureWidth / 2;
+
+			coordXprocent = coordX / furnitureWidth * 200;
+
+			if (!furniture.classList.contains('_init')) {
+				requestAnimationFrame(setMauseGalleryStyle);
+				furniture.classList.add('_init');
+			}
+		}
+	});
+}
