@@ -1517,6 +1517,87 @@ function inputFile() {
 }
 inputFile();
 
+function addFile() {
+	const buttons = document.querySelectorAll("[data-file-add]")
 
+	buttons.forEach(button => {
+		fileAction(button)
+	});
 
+	function fileAction(button) {
+		button.addEventListener("click", function () {
+			if (!button.classList.contains("_active")) {
+				button.classList.add("_active");
+				addBlock()
+				inputFile()
 
+				if (button.classList.contains("_active")) {
+					setTimeout(() => {
+						button.classList.remove("_active");
+					}, 300);
+				}
+
+				const items = document.querySelectorAll(".remote__file");
+
+				if (items.length >= 5) {
+					button.remove();
+				}
+			}
+		});
+	}
+
+	function addBlock() {
+		const files = document.querySelector('.remote-field__row');
+
+		let template = `
+		<div class="remote__file remote-file wow animate__animated animate__fadeIn" data-wow-duration="0.8s" data-input-file-main>
+			<div class="remote-file__label">
+				Upload Photos Or Send Photos
+			</div>
+			<div class="remote-file__item">
+				<div class="remote-file__input">
+					<div class="remote-file__input-text">
+						<span data-input-file-text data-input-file-max-symbols="25">
+							File is not selected
+						</span>
+					</div>
+					<button class="remote-file__input-btn">
+						<form class="remote-file__input-form" method="post"
+							enctype="multipart/form-data">
+							<label class="input-file">
+								<input data-input-file type="file" name="file" multiple>
+								<span>Select</span>
+							</label>
+						</form>
+					</button>
+				</div>
+				<div class="remote-file__max-size" data-input-file-maxsize="10">
+					Max. file size 10 MB
+				</div>
+			</div>
+		</div>
+		`
+
+		files.insertAdjacentHTML("beforeEnd", template);
+	}
+}
+addFile()
+
+function remoteCatalog() {
+	const buttons = document.querySelectorAll(".remote-catalog__button");
+
+	buttons.forEach(button => {
+		button.addEventListener("click", function () {
+			if (!button.classList.contains("_active")) {
+				buttons.forEach(button => {
+					button.classList.remove("_active");
+				});
+
+				button.classList.add("_active");
+			} else {
+				button.classList.remove("_active");
+			}
+		});
+	});
+}
+remoteCatalog()
