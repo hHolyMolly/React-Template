@@ -1377,6 +1377,98 @@ function remoteCatalog() {
 }
 remoteCatalog()
 
+function addComment() {
+	const inputName = document.querySelector("#comment-name");
+	const textareaText = document.querySelector("#comment-textarea");
+	const button = document.querySelector("[data-button-comment]");
+
+	let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+	let date = new Date();
+
+	const dataItem = innerHTML = date.toJSON().slice(8, 10).replace(/-/g, ' ') + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
+
+	if (button) {
+		button.addEventListener("click", function () {
+			if (inputName.value.length > 1 && textareaText.value.length > 5) {
+				if (!button.classList.contains("_active")) {
+					button.classList.add("_active");
+					addCommentItem()
+
+					inputName.value = "";
+					textareaText.value = "";
+					document.querySelector("#comment-email").value = "";
+					document.querySelector(".field__textarea-value").innerText = "0"
+
+					if (button.classList.contains("_active")) {
+						setTimeout(() => {
+							button.classList.remove("_active");
+						}, 300);
+					}
+				}
+			}
+		});
+	}
+
+	function addCommentItem() {
+		const commentList = document.querySelector('.blog-comments__items');
+
+		let template;
+
+		if (window.innerWidth > 480) {
+			template = `
+				<article class="blog-comments-items__comment">
+					<i class="blog-comments-items__icon blog-comments-items__icon_pc">
+						<img src="img/page/blog/icon-comment.svg" alt="icon-comment">
+					</i>
+					<div class="blog-comments-items__text-block">
+						<div class="blog-comments-items__item">
+							<i class="blog-comments-items__icon blog-comments-items__icon_mobile">
+								<img src="img/page/blog/icon-comment.svg" alt="icon-comment">
+							</i>
+							<h5 class="blog-comments-items__name">
+								${inputName.value}
+							</h5>
+							<span class="blog-comments-items__data">
+								${dataItem}
+							</span>
+						</div>
+						<p class="blog-comments-items__text">
+							${textareaText.value}
+						</p>
+					</div>
+				</article>
+				`
+		} else {
+			template = `
+			<article class="blog-comments-items__comment">
+				<i class="blog-comments-items__icon blog-comments-items__icon_pc">
+					<img src="img/page/blog/icon-comment.svg" alt="icon-comment">
+				</i>
+				<div class="blog-comments-items__text-block">
+					<div class="blog-comments-items__item">
+						<i class="blog-comments-items__icon blog-comments-items__icon_mobile">
+							<img src="img/page/blog/icon-comment.svg" alt="icon-comment">
+						</i>
+						<h5 class="blog-comments-items__name">
+							${inputName.value}
+						</h5>
+					</div>
+				</div>
+				<p class="blog-comments-items__text">
+					${textareaText.value}
+				</p>
+				<span class="blog-comments-items__data">
+					${dataItem}
+				</span>
+			</article>
+			`
+		}
+
+		commentList.insertAdjacentHTML("beforeEnd", template);
+	}
+}
+addComment()
+
 function adaptiveComment() {
 	const items = document.querySelectorAll(".blog-comments-items__comment");
 
@@ -1399,66 +1491,3 @@ function adaptiveComment() {
 	}
 }
 adaptiveComment()
-
-function addComment() {
-	const inputName = document.querySelector("#comment-name");
-	const textareaText = document.querySelector("#comment-textarea");
-	const button = document.querySelector("[data-button-comment]");
-
-	let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-	let date = new Date();
-
-	const dataItem = innerHTML = date.toJSON().slice(8, 10).replace(/-/g, ' ') + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
-
-	if (button) {
-		button.addEventListener("click", function () {
-			if (inputName.value.length > 1 && textareaText.value.length > 5) {
-				if (!button.classList.contains("_active")) {
-					button.classList.add("_active");
-					addCommentItem()
-
-					inputName.value = "";
-					textareaText.value = "";
-					document.querySelector(".field__textarea-value").innerText = "0"
-
-					if (button.classList.contains("_active")) {
-						setTimeout(() => {
-							button.classList.remove("_active");
-						}, 300);
-					}
-				}
-			}
-		});
-	}
-
-	function addCommentItem() {
-		const commentList = document.querySelector('.blog-comments__items');
-
-		let template = `
-		<article class="blog-comments-items__comment">
-			<i class="blog-comments-items__icon blog-comments-items__icon_pc">
-				<img src="img/page/blog/icon-comment.svg" alt="icon-comment">
-			</i>
-			<div class="blog-comments-items__text-block">
-				<div class="blog-comments-items__item">
-					<i class="blog-comments-items__icon blog-comments-items__icon_mobile">
-						<img src="img/page/blog/icon-comment.svg" alt="icon-comment">
-					</i>
-					<h5 class="blog-comments-items__name">
-						${inputName.value}
-					</h5>
-					<span class="blog-comments-items__data">
-						${dataItem}
-					</span>
-				</div>
-				<p class="blog-comments-items__text">
-				${textareaText.value}
-				</p>
-			</div>
-		</article>
-			`
-
-		commentList.insertAdjacentHTML("beforeEnd", template);
-	}
-}
-addComment()
