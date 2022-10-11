@@ -238,6 +238,59 @@ if (document.querySelector(".customers-said__slider")) {
 			},
 		}
 	});
+}
+
+if (document.querySelector(".video-reviews__slider")) {
+	new Swiper(".video-reviews__slider", {
+		spaceBetween: 20,
+		grabCursor: true,
+		speed: 800,
+		loop: true,
+
+
+		navigation: {
+			nextEl: ".video-reviews-slider__arrow_next.swiper-button-next",
+			prevEl: ".video-reviews-slider__arrow_prev.swiper-button-prev",
+		},
+
+		pagination: {
+			el: ".video-reviews-slider__pagination.swiper-pagination",
+			clickable: true,
+			renderBullet: function (index, className) {
+				return '<span class="' + className + '">' + (index + 1) + "</span>";
+			},
+		},
+
+		breakpoints: {
+			768.2: {
+
+			},
+		}
+	});
+}
+
+if (document.querySelector(".blog-section-slider")) {
+	new Swiper(".blog-section-slider", {
+		slidesPerView: 1,
+		spaceBetween: 30,
+		grabCursor: true,
+		speed: 800,
+		loop: true,
+
+		navigation: {
+			nextEl: ".blog-section-slider__arrow.swiper-button-next",
+			prevEl: ".blog-section-slider__arrow.swiper-button-prev",
+		},
+
+		breakpoints: {
+			992.2: {
+				slidesPerView: 3,
+			},
+			480.2: {
+				slidesPerView: 2,
+			},
+		}
+	});
 }; // НАСТРОЙКИ СЛАЙДЕРА
 
 /* function quantity() {
@@ -1601,3 +1654,90 @@ function remoteCatalog() {
 	});
 }
 remoteCatalog()
+
+function adaptiveComment() {
+	const items = document.querySelectorAll(".blog-comments-items__comment");
+
+	window.addEventListener("resize", commentAction);
+	document.addEventListener("DOMContentLoaded", commentAction);
+
+	function commentAction() {
+		items.forEach(item => {
+			const itemIcon = item.querySelector(".blog-comments-items__icon");
+			const itemData = item.querySelector(".blog-comments-items__data");
+			const itemText = item.querySelector(".blog-comments-items__text");
+
+			if (window.innerWidth < 480.2) {
+				item.appendChild(itemText);
+				item.appendChild(itemData);
+			} else {
+				item.querySelector(".blog-comments-items__text-block").appendChild(itemText);
+				item.querySelector(".blog-comments-items__item").appendChild(itemData);
+			}
+		});
+	}
+}
+adaptiveComment()
+
+function addComment() {
+	const inputName = document.querySelector("#comment-name");
+	const textareaText = document.querySelector("#comment-textarea");
+	const button = document.querySelector("[data-button-comment]");
+
+	let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+	let date = new Date();
+
+	const dataItem = innerHTML = date.toJSON().slice(8, 10).replace(/-/g, ' ') + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
+
+	if (button) {
+		button.addEventListener("click", function () {
+			if (inputName.value.length > 1 && textareaText.value.length > 5) {
+				if (!button.classList.contains("_active")) {
+					button.classList.add("_active");
+					addCommentItem()
+
+					inputName.value = "";
+					textareaText.value = "";
+					document.querySelector(".field__textarea-value").innerText = "0"
+
+					if (button.classList.contains("_active")) {
+						setTimeout(() => {
+							button.classList.remove("_active");
+						}, 300);
+					}
+				}
+			}
+		});
+	}
+
+	function addCommentItem() {
+		const commentList = document.querySelector('.blog-comments__items');
+
+		let template = `
+		<article class="blog-comments-items__comment">
+			<i class="blog-comments-items__icon blog-comments-items__icon_pc">
+				<img src="img/page/blog/icon-comment.svg" alt="icon-comment">
+			</i>
+			<div class="blog-comments-items__text-block">
+				<div class="blog-comments-items__item">
+					<i class="blog-comments-items__icon blog-comments-items__icon_mobile">
+						<img src="img/page/blog/icon-comment.svg" alt="icon-comment">
+					</i>
+					<h5 class="blog-comments-items__name">
+						${inputName.value}
+					</h5>
+					<span class="blog-comments-items__data">
+						${dataItem}
+					</span>
+				</div>
+				<p class="blog-comments-items__text">
+				${textareaText.value}
+				</p>
+			</div>
+		</article>
+			`
+
+		commentList.insertAdjacentHTML("beforeEnd", template);
+	}
+}
+addComment()
